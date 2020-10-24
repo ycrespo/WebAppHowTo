@@ -4,6 +4,7 @@
     "Domain": "ycrespo.onmicrosoft.com",
     "TenantId": "YourTenantId",
     "ClientId": "YourClientId",
+    "GroupsId" : [ "YourGroupId" ],
     "CallbackPath": "/signin-oidc"
   },
   "Logging": {

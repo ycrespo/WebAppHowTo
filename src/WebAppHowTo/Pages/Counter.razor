@@ -1,6 +1,11 @@
 ﻿@page "/counter"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@*If the first time does not works try to logout and login back again.*@
+@attribute [Authorize(Roles = "Manager")]
 
 <h1>Counter</h1>
+
+<h1>Just Manager roles can see this page</h1>
 
 <p>Current count: @currentCount</p>
 

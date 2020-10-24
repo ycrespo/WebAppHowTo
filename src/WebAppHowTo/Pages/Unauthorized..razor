@@ -1,0 +1,5 @@
+@page "/Unauthorized"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Unauthorized</h3>

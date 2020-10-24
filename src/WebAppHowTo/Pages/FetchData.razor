@@ -2,8 +2,12 @@
 
 @using WebAppHowTo.Data
 @inject WeatherForecastService ForecastService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize("Admin")]
 
 <h1>Weather forecast</h1>
+
+<h1>Just Admin group can see this page</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
 

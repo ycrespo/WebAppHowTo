@@ -13,7 +13,10 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
 using WebAppHowTo.Data;
+using WebAppHowTo.Settings;
 
 namespace WebAppHowTo
 {
@@ -30,16 +33,14 @@ namespace WebAppHowTo
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-                .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+            services.AddMicrosoftIdentityWebAppAuthentication(Configuration);
 
-            services.AddControllersWithViews(options =>
+            var azureAdSettings = Configuration.GetSection("AzureAd").Get<AzureAdSettings>();
+            services.AddAuthorization(options =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
+                options.AddPolicy("Admin", policy => policy.RequireClaim("groups", azureAdSettings.GroupsId));
             });
+            services.AddControllersWithViews().AddMicrosoftIdentityUI();
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
