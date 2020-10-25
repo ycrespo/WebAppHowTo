@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,7 +33,10 @@ namespace WebAppHowTo
                 options.AddPolicy("Admin", policy => policy.RequireClaim("groups", azureAdSettings.GroupsId));
             });
             services.AddControllersWithViews().AddMicrosoftIdentityUI();
-
+            
+            services.AddDbContext<PerryMasonContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("PerryMason")));
+            
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();

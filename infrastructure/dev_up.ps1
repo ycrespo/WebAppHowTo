@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # infrastructure
 
-docker-compose -f docker-compose.yml up
+docker-compose -f docker-compose.yml up -d
