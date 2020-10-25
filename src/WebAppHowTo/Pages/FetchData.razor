@@ -11,12 +11,7 @@
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
+ <Loader Result="@isValid">
     <table class="table">
         <thead>
             <tr>
@@ -38,13 +33,16 @@ else
             }
         </tbody>
     </table>
-}
+</Loader>
 
 @code {
     private WeatherForecast[] forecasts;
+    private bool? isValid;
 
     protected override async Task OnInitializedAsync()
     {
+        await Task.Delay(millisecondsDelay: 3000);
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        isValid = true;
     }
 }
