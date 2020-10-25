@@ -7,6 +7,9 @@
     "GroupsId" : [ "YourGroupId" ],
     "CallbackPath": "/signin-oidc"
   },
+  "ConnectionStrings" : {
+    "PerryMason" : "Host=localhost;Port=5434;Database=PerryMason;Username=Stuttering;Password=Bishop"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
