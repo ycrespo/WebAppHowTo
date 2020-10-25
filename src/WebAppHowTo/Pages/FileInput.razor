@@ -1,0 +1,82 @@
+@page "/fileinput"
+
+@inject IFileUpload FileUpload
+
+<h3>File Upload</h3>
+<div class="container p-3 my-3 border">
+    <InputFile OnChange="HandleFileSelected"></InputFile>
+    
+    @if (fileToUpload != null)
+    {
+        <p></p>
+        <p>Name: @fileToUpload.Name</p>    
+        <p>Size in Bytes: @fileToUpload.Size</p>    
+        <p>File type: @fileToUpload.Type</p>    
+    }
+</div>
+
+<div class="container p-3 my-3 border">
+    <label for="uploadFolder">Select Folder</label>
+    <InputFile id="uploadFolder" multiple  OnChange="HandleSelection" />
+    
+    @if (selectedFiles != null)
+    {
+        foreach (var file in selectedFiles)
+        {
+            var isLoading = file.Data.Position > 0;
+    
+            <div class="container p-3 my-3 border" style="background-color : #C0C0C0">
+                <!-- File info -->
+                <div class="row">
+                    <div class="col-sm-10">
+                        <h5>@file.Name</h5>
+                        Size: <strong>@file.Size bytes</strong>;
+                        Last modified: <strong>@file.LastModified.ToShortDateString()</strong>;
+                        Type: <strong>@file.Type</strong>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="center">
+                            <!-- Upload button -->
+                            <button  @onclick="() => LoadFile(file)" disabled="@isLoading">
+                                @if (!isLoading)
+                                {
+                                    <span>Load</span>
+                                }
+                                else
+                                {
+                                    <span>Loaded @((100.0 * file.Data.Position / file.Size).ToString("0"))%</span>
+                                }
+                            </button>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    IFileListEntry fileToUpload;
+    IEnumerable<IFileListEntry> selectedFiles;
+    async Task HandleFileSelected(IEnumerable<IFileListEntry> files)
+    {
+        fileToUpload = files.FirstOrDefault();
+        if (fileToUpload != null)
+        {
+            await FileUpload.UploadAsync(fileToUpload);
+        }
+    }
+    
+    void HandleSelection(IFileListEntry[] files)
+    {
+        selectedFiles = files;
+    }
+
+    async Task LoadFile(IFileListEntry file)
+    {
+        // So the UI updates to show progress
+        file.OnDataRead += (_, _) => InvokeAsync(StateHasChanged);
+
+        await FileUpload.UploadAsync(file);
+    }
+}

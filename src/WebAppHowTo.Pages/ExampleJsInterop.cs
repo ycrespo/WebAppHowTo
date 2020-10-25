@@ -1,7 +1,7 @@
-using Microsoft.JSInterop;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 
-namespace BlazorServerDemoWithAuth.Pages
+namespace WebAppHowTo.Pages
 {
     public class ExampleJsInterop
     {
