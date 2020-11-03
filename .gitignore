@@ -330,5 +330,6 @@ ASALocalRun/
 
 #Other Files
 src/WebAppHowTo/appsettings.json
-HowToBuildTheApp.txt
+Help/*
 src/WebAppHowTo/Uploads/*
+src/WebAppHowTo/wwwroot/Downloads/*

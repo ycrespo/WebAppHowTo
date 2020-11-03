@@ -38,9 +38,11 @@ namespace WebAppHowTo
                 options.UseNpgsql(Configuration.GetConnectionString("PerryMason")));
             
             services.AddRazorPages();
+            
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IFileUpload, FileUploadService>();
+            services.AddScoped<IGetFiles, GetFilesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

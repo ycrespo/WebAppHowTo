@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # infrastructure
 
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose-postgres-dumbo.yml up -d

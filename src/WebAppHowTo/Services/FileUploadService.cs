@@ -7,16 +7,16 @@ namespace WebAppHowTo.Services
 {
     public class FileUploadService : IFileUpload
     {
-        private readonly IWebHostEnvironment environment;
+        private readonly IWebHostEnvironment _environment;
 
         public FileUploadService(IWebHostEnvironment environment)
         {
-            this.environment = environment;
+            _environment = environment;
         }
 
         public async Task UploadAsync(IFileListEntry file)
         {
-            var path = Path.Combine(environment.ContentRootPath, "Uploads", file.Name);
+            var path = Path.Combine(_environment.ContentRootPath, "Uploads", file.Name);
             await using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
             await file.Data.CopyToAsync(stream);
         }
