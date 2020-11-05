@@ -1,0 +1,30 @@
+@page "/EmbedFiles"
+@using MimeTypes
+
+@inject NavigationManager NavManager
+@inject IGetFiles GetFiles
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+
+<h3>@_filename</h3>
+
+<div stile = "padding: 20px">
+    <embed type="@_embType" src="@(@$"/{_folder}/{_filename}")" style="height : 90vh" width="100%">
+</div>
+
+@code {
+
+    private string _folder;
+    private string _embType;
+    private string _filename;
+
+    protected override void OnInitialized()
+    {
+        NavManager.TryGetQueryString<string>("folder", out _folder);
+        NavManager.TryGetQueryString<string>("fileName", out _filename);
+        
+        _embType = MimeTypeMap.GetMimeType(Path.GetExtension(@"/_folder/_filename"));
+    }
+
+}

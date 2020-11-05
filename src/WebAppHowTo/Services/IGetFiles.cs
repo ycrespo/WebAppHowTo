@@ -5,6 +5,7 @@ namespace WebAppHowTo.Services
 {
     public interface IGetFiles
     {
-        public IEnumerable<FileInfo> GetFilesInfo(string path);
+        IEnumerable<FileInfo> GetFilesInfo(string path);
+        string GetFullPath(string path);
     }
 }

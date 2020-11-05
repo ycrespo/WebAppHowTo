@@ -19,5 +19,10 @@ namespace WebAppHowTo.Services
             var files = Directory.GetFiles(Path.Combine(_environment.ContentRootPath, path));
             return files.Select(f => new FileInfo(f));
         }
+        
+        public string GetFullPath(string path)
+        {
+            return Path.Combine(_environment.ContentRootPath, path);
+        }
     }
 }

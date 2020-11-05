@@ -23,9 +23,17 @@
                 <td>@fileInfo.Length</td>
                 <td>@fileInfo.Extension</td>
                 <td>
-                    <a href=@($"/Downloads/{fileInfo.Name}") download=@fileInfo.Name  target="_top">
+                    <a href=@($"/EmbedFiles?folder=Downloads&filename={fileInfo.Name}")>
+                        <span class="oi  oi-eye" aria-hidden="true"></span>
+                    </a>
+                </td>
+                <td>
+                    <a href=@($"/Downloads/{fileInfo.Name}") download=@fileInfo.Name target="_top">
                         <span class="oi oi-data-transfer-download" aria-hidden="true"></span>
                     </a>
+                </td>
+                <td>
+                     <span class="oi  oi-delete" aria-hidden="true"></span>
                 </td>
             </tr>
         }
@@ -50,9 +58,12 @@
                     <td>@fileInfo.Length</td>
                     <td>@fileInfo.Extension</td>
                     <td>
-                        <a href=@($"/api/DownloadController/{fileInfo.Name}") download=@fileInfo.Name  target="_top">
+                        <a href=@($"/api/DownloadController/{fileInfo.Name}") download=@fileInfo.Name target="_top">
                             <span class="oi oi-data-transfer-download" aria-hidden="true"></span>
                         </a>
+                    </td>
+                    <td>
+                        <span class="oi  oi-delete" aria-hidden="true"></span>
                     </td>
                 </tr>
             }
@@ -61,10 +72,9 @@
 </Loader>
 
 @code {
-    
-    
     private IEnumerable<FileInfo> _downloadsFilesInfos;
     private IEnumerable<FileInfo> _uploadsFilesInfos;
+    
     private bool? _isValid;
 
     protected override Task OnInitializedAsync()
