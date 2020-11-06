@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using WebAppHowTo.Core.Converters;
 using WebAppHowTo.Data;
 using WebAppHowTo.Services;
 using WebAppHowTo.Settings;
@@ -43,6 +44,7 @@ namespace WebAppHowTo
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IFileUpload, FileUploadService>();
             services.AddScoped<IGetFiles, GetFilesService>();
+            services.AddScoped<IConverter, DocToHtmlConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

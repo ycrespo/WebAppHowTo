@@ -23,9 +23,7 @@
                 <td>@fileInfo.Length</td>
                 <td>@fileInfo.Extension</td>
                 <td>
-                    <a href=@($"/EmbedFiles?folder=Downloads&filename={fileInfo.Name}")>
-                        <span class="oi  oi-eye" aria-hidden="true"></span>
-                    </a>
+                    <Link Extension="@fileInfo.Extension" Href="@($"/EmbedFiles?folder=Downloads&filename={fileInfo.Name}")"/>
                 </td>
                 <td>
                     <a href=@($"/Downloads/{fileInfo.Name}") download=@fileInfo.Name target="_top">
@@ -57,6 +55,9 @@
                     <td>@fileInfo.Name</td>
                     <td>@fileInfo.Length</td>
                     <td>@fileInfo.Extension</td>
+                    <td>
+                        <Link Extension="@fileInfo.Extension" Href="@($"/EmbedFiles?folder=Uploads&filename={fileInfo.Name}")"/>
+                    </td>
                     <td>
                         <a href=@($"/api/DownloadController/{fileInfo.Name}") download=@fileInfo.Name target="_top">
                             <span class="oi oi-data-transfer-download" aria-hidden="true"></span>

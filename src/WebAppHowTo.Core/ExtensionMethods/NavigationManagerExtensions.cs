@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace WebAppHowTo.ExtensionMethods
+namespace WebAppHowTo.Core.ExtensionMethods
 {
     public static class NavigationManagerExtensions
     {

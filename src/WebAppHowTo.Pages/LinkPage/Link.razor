@@ -1,0 +1,21 @@
+@switch (Extension)
+{
+    case ".pdf":
+    case ".docx":
+    case ".html":
+    case ".txt":
+        <a href="@Href">
+            <span class='oi  oi-eye' aria-hidden='true'></span>
+        </a>
+        break;
+    default:
+        <span class='oi  oi-eye' aria-hidden='true'></span>
+        break;
+}
+
+@code
+{
+    [Parameter] public string Extension { get; set; }
+    [Parameter] public string Href { get; set; }
+    [Parameter] public RenderFragment ChildContent  { get; set; } = null!;
+}

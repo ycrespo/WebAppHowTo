@@ -21,13 +21,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebAppHowTo.Core\WebAppHowTo.Core.csproj" />
     <ProjectReference Include="..\WebAppHowTo.Data\WebAppHowTo.Data.csproj" />
     <ProjectReference Include="..\WebAppHowTo.Pages\WebAppHowTo.Pages.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Uploads" />
-    <Folder Include="wwwroot\Downloads" />
+    <Folder Include="Temp" />
   </ItemGroup>
 
 </Project>

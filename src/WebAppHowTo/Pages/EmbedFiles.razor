@@ -1,30 +1,44 @@
 @page "/EmbedFiles"
 @using MimeTypes
+@using DocumentFormat.OpenXml.Bibliography
 
 @inject NavigationManager NavManager
 @inject IGetFiles GetFiles
+@inject IConverter Doc2HtmlConverter
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 
 
-<h3>@_filename</h3>
+<h3>@Path.GetFileNameWithoutExtension(_filename)</h3>
 
 <div stile = "padding: 20px">
-    <embed type="@_embType" src="@(@$"/{_folder}/{_filename}")" style="height : 90vh" width="100%">
+    <embed type="@_embType" src="@_path" style="height : 90vh" width="100%">
 </div>
 
 @code {
 
-    private string _folder;
+    private string _path;
     private string _embType;
     private string _filename;
 
     protected override void OnInitialized()
     {
-        NavManager.TryGetQueryString<string>("folder", out _folder);
-        NavManager.TryGetQueryString<string>("fileName", out _filename);
-        
-        _embType = MimeTypeMap.GetMimeType(Path.GetExtension(@"/_folder/_filename"));
-    }
+        NavManager.TryGetQueryString("folder", out string folder);
+        NavManager.TryGetQueryString("fileName", out _filename);
 
+        
+        var path = $"{folder}/{_filename}";
+        
+        switch (Path.GetExtension(_filename))
+        {
+            case ".docx":
+                var fileInfo = GetFiles.GetFileInfo(path.Replace("Downloads",@"wwwroot/Downloads"));
+                _path = Doc2HtmlConverter.Convert(fileInfo, GetFiles.TempFolder);
+                break;
+            default:
+                _path = $"/{path.Replace("Uploads",@"api/ViewController/Uploads")}";
+                break;
+        }
+        _embType = MimeTypeMap.GetMimeType(Path.GetExtension(_path));
+    }
 }
