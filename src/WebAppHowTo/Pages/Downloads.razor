@@ -31,7 +31,7 @@
                     </a>
                 </td>
                 <td>
-                     <span class="oi  oi-delete" aria-hidden="true"></span>
+                     <span class="oi  oi-delete" aria-hidden="true" style="color:red;" @onclick="() => OnClickDeleteButton(fileInfo)"></span>
                 </td>
             </tr>
         }
@@ -64,7 +64,7 @@
                         </a>
                     </td>
                     <td>
-                        <span class="oi  oi-delete" aria-hidden="true"></span>
+                        <span class="oi  oi-delete" aria-hidden="true" style="color:red;" @onclick="() => OnClickDeleteButton(fileInfo)" ></span>
                     </td>
                 </tr>
             }
@@ -91,5 +91,15 @@
         await JSRuntime.InvokeVoidAsync(
             "downloadFromUrl", $"/api/DownloadController/{fileInfo.Name}", $"{fileInfo.Name}");
     }
+
+    private async Task OnClickDeleteButton(FileSystemInfo fileInfo)
+    {
+        var res = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete the file?");
+        if (res == false) return;
+        
+        File.Delete(fileInfo.FullName);
+    }
+
     
+
 }
