@@ -8,6 +8,7 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using WebAppHowTo.Core.Converters;
 using WebAppHowTo.Data;
+using WebAppHowTo.Data.Gateways;
 using WebAppHowTo.Services;
 using WebAppHowTo.Settings;
 
@@ -36,7 +37,7 @@ namespace WebAppHowTo
             services.AddControllersWithViews().AddMicrosoftIdentityUI();
             
             services.AddDbContext<PerryMasonContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("PerryMason")));
+                options.UseSqlServer(Configuration.GetConnectionString("PerryMason")));
             
             services.AddRazorPages();
             
@@ -45,6 +46,7 @@ namespace WebAppHowTo
             services.AddScoped<IFileUpload, FileUploadService>();
             services.AddScoped<IGetFiles, GetFilesService>();
             services.AddScoped<IConverter, DocToHtmlConverter>();
+            services.AddScoped<IContextGateway, ContextGateway>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

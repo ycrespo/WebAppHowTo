@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAppHowTo.Data;
 
 namespace WebAppHowTo.Data.Migrations
 {
     [DbContext(typeof(PerryMasonContext))]
-    partial class PerryMasonContextModelSnapshot : ModelSnapshot
+    [Migration("20201112120134_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,14 +44,8 @@ namespace WebAppHowTo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Header")
                         .HasColumnType("nvarchar(max)");
