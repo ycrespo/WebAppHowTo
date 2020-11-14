@@ -1,0 +1,57 @@
+@page "/IframeFiles"
+
+@inject NavigationManager NavManager
+@inject IJSRuntime JsRuntime
+@inject IFilesService FilesService
+ 
+<div class="container p-3 my-3">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>@Path.GetFileNameWithoutExtension(_filename)</h3>
+        </div>   
+        <div class="col-sm-6" style="text-align: right;">
+            <button class="btn btn-sm btn-primary order-button" @onclick="ExportHtml">Export to file</button>
+        </div>
+    </div>   
+</div>
+
+<div stile = "padding: 20px">
+    <iframe frameBorder="0" id="@frameId" src="@_path" style="height : 90vh" width="100%"></iframe>
+</div>
+
+@code {
+    private string _filename;
+    private string _path;
+    private string _htmlFile;
+    private FileInfo _htmlInfo;
+    private const string frameId = "myFrame";
+    private const string textAreaId = "myTextArea";
+
+    protected override async Task OnInitializedAsync() 
+    {
+        NavManager.TryGetQueryString("folder", out string folder);
+        NavManager.TryGetQueryString("fileName", out _filename);
+        
+        var filePath = $"{folder}/{_filename}";
+        var docInfo = FilesService.GetFileInfo(filePath);
+        var htmlPath = Docx2HtmlConverter.Convert(docInfo, FilesService.TempFolder);
+        _htmlFile = await File.ReadAllTextAsync(htmlPath);
+        _htmlInfo = FilesService.GetFileInfo(htmlPath);
+        var newHtml = _htmlFile.Replace("inputTextArea", @$"<textarea id='{textAreaId}' name='{textAreaId}' rows='6' cols='100' ></textarea>");
+        var fullPath = await FilesService.GetFullPathAsync(_htmlInfo, newHtml);
+        
+        _filename = _htmlInfo.Name;
+        _path = @$"/api/DownloadController/Temp/{Path.GetFileName(fullPath)}";
+    }
+    
+    private async Task ExportHtml()
+    {
+        var text = await JsRuntime.InvokeAsync<string>("GetTextAreaInnerHtml", frameId, textAreaId);
+        var newFile = _htmlFile.Replace("inputTextArea", text);
+        
+        var fullPath = await FilesService.GetFullPathAsync(_htmlInfo, newFile);
+        Html2DocxConverter.Convert(fullPath, Path.GetDirectoryName(_htmlInfo.FullName));
+        
+        NavManager.NavigateTo(@$"/EmbedFiles?folder=Temp&filename={Path.GetFileName(fullPath)}");
+    }
+}

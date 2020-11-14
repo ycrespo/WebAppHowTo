@@ -10,9 +10,9 @@ using OpenXmlPowerTools;
 
 namespace WebAppHowTo.Core.Converters
 {
-    public class DocToHtmlConverter : IConverter
+    public static class Docx2HtmlConverter 
     {
-        public string Convert(FileInfo fileInfo, string outputDir)
+        public static string Convert(FileInfo fileInfo, string outputDir)
         {
             var byteArray = File.ReadAllBytes(fileInfo.FullName);
 
@@ -124,7 +124,7 @@ namespace WebAppHowTo.Core.Converters
             var htmlString = html.ToString(SaveOptions.DisableFormatting);
             File.WriteAllText(htmlFileName.FullName, htmlString, Encoding.UTF8);
             
-            return @$"/api/ViewController/Temp/{htmlFileName.Name}";
+            return htmlFileName.FullName;
         }
     }
 }

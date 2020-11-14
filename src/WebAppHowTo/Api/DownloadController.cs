@@ -2,6 +2,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using MimeTypes;
 
 namespace WebAppHowTo.Api
 {
@@ -15,13 +16,12 @@ namespace WebAppHowTo.Api
             _environment = environment;
         }
 
-        //GET api/download/12345abc
-        [HttpGet("{filename}")]
-        public async Task<IActionResult> Download(string filename)
+        [HttpGet("{folder}/{filename}")]
+        public async Task<IActionResult> Download(string folder, string filename)
         {
-            var path = Path.Combine(_environment.ContentRootPath, "Uploads", filename);
+            var path = Path.Combine(_environment.ContentRootPath, folder, filename);
             var stream = System.IO.File.OpenRead(path);
-            return  new FileStreamResult(stream, "application/octet-stream"); // returns a FileStreamResult
-        }    
+            return  new FileStreamResult(stream, MimeTypeMap.GetMimeType(Path.GetExtension(path))); 
+        }  
     }
 }

@@ -1,0 +1,58 @@
+@page "/Templates"
+@inject IJSRuntime JsRuntime
+@inject IFilesService FilesService
+
+
+ 
+<h3>Templates</h3>
+
+<Loader Result="@_isValid">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Filename</th>
+            <th>Size</th>
+            <th>Extension</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var fileInfo in _templatesFilesInfos)
+        {
+            <tr>
+                <td>@fileInfo.Name</td>
+                <td>@fileInfo.Length</td>
+                <td>@fileInfo.Extension</td>
+                <td>
+                    <Link Extension="@fileInfo.Extension" Href="@($"/IframeFiles?folder=Templates&filename={fileInfo.Name}")"/>
+                </td>
+                <td>
+                    <a href=@($"api/DownloadController/Templates/{fileInfo.Name}") download=@fileInfo.Name target="_top">
+                        <span class="oi oi-data-transfer-download" aria-hidden="true"></span>
+                    </a>
+                </td>
+                <td>
+                     <span class="oi  oi-delete" aria-hidden="true" style="color:red;" @onclick="() => OnClickDeleteButton(fileInfo)"></span>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</Loader>
+
+@code {
+    private IEnumerable<FileInfo> _templatesFilesInfos;
+    private bool? _isValid;
+    protected override void OnInitialized()
+    {
+        _templatesFilesInfos = FilesService.GetFilesInfo(@"Templates");
+        _isValid = true;
+    }
+    
+    private async Task OnClickDeleteButton(FileSystemInfo fileInfo)
+    {
+        var res = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete the file?");
+        if (res == false) return;
+        
+        File.Delete(fileInfo.FullName);
+    }
+}

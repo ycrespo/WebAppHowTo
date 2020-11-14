@@ -1,11 +1,10 @@
 @page "/EmbedFiles"
 @using MimeTypes
-@using DocumentFormat.OpenXml.Bibliography
 
+@implements System.IDisposable
 @inject NavigationManager NavManager
-@inject IGetFiles GetFiles
-@inject IConverter Doc2HtmlConverter
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IFilesService FilesService
 @attribute [Authorize]
 
 
@@ -25,20 +24,28 @@
     {
         NavManager.TryGetQueryString("folder", out string folder);
         NavManager.TryGetQueryString("fileName", out _filename);
-
         
-        var path = $"{folder}/{_filename}";
+        var localPath = $"{folder}/{_filename}";
         
         switch (Path.GetExtension(_filename))
         {
             case ".docx":
-                var fileInfo = GetFiles.GetFileInfo(path.Replace("Downloads",@"wwwroot/Downloads"));
-                _path = Doc2HtmlConverter.Convert(fileInfo, GetFiles.TempFolder);
+                var fileInfo = FilesService.GetFileInfo(localPath.Replace("Downloads",@"wwwroot/Downloads"));
+                var htmlFullPath = Docx2HtmlConverter.Convert(fileInfo, FilesService.TempFolder);
+                _path = @$"/api/DownloadController/Temp/{Path.GetFileName(htmlFullPath)}";
                 break;
             default:
-                _path = $"/{path.Replace("Uploads",@"api/ViewController/Uploads")}";
+                _path = folder == "Downloads" 
+                    ? localPath
+                    : @$"/api/DownloadController/{folder}/{_filename}";
                 break;
         }
         _embType = MimeTypeMap.GetMimeType(Path.GetExtension(_path));
     }
+
+    public void Dispose()
+    {
+        FilesService.DeleteTmpFolder();
+    }
+
 }

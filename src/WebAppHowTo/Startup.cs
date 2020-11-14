@@ -43,9 +43,7 @@ namespace WebAppHowTo
             
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddScoped<IFileUpload, FileUploadService>();
-            services.AddScoped<IGetFiles, GetFilesService>();
-            services.AddScoped<IConverter, DocToHtmlConverter>();
+            services.AddScoped<IFilesService, FilesService>();
             services.AddScoped<IContextGateway, ContextGateway>();
         }
 

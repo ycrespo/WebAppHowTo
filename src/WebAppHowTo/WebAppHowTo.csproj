@@ -31,4 +31,11 @@
     <Folder Include="Temp" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Templates\Proposal_Template.docx">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

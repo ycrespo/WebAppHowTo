@@ -1,6 +1,6 @@
 @page "/fileinput"
 
-@inject IFileUpload FileUpload
+@inject IFilesService FileService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 
@@ -65,7 +65,7 @@
         fileToUpload = files.FirstOrDefault();
         if (fileToUpload != null)
         {
-            await FileUpload.UploadAsync(fileToUpload);
+            await FileService.UploadAsync(fileToUpload);
         }
     }
     
@@ -79,6 +79,6 @@
         // So the UI updates to show progress
         file.OnDataRead += (_, _) => InvokeAsync(StateHasChanged);
 
-        await FileUpload.UploadAsync(file);
+        await FileService.UploadAsync(file);
     }
 }
