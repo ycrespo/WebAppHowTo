@@ -44,14 +44,17 @@ namespace WebAppHowTo.Services
             await file.Data.CopyToAsync(stream);
         }
         
-        public async Task<string> GetFullPathAsync(FileSystemInfo fileInfo, string newFile)
+        public string GetNewFullName(string fullName, string newFilename, string addText = "")
         {
-            var name = Path.GetFileNameWithoutExtension(fileInfo.FullName);
-            var ext = Path.GetExtension(fileInfo.FullName);
-            var filename = $"{name}_Edited{ext}";
-            var fullPath = Path.Combine(Path.GetDirectoryName(fileInfo.FullName), filename);
-            await File.WriteAllTextAsync(fullPath, newFile, Encoding.UTF8);
-            return fullPath;
+            var name = Path.GetFileNameWithoutExtension(newFilename);
+            var ext = Path.GetExtension(fullName);
+            var dir = Path.GetDirectoryName(fullName) ?? "./";
+            return Path.Combine(dir, $"{name}{addText}{ext}");
+        }
+
+        public async Task SaveFileAsync(string fullPath, string file)
+        {
+            await File.WriteAllTextAsync(fullPath, file, Encoding.UTF8);
         }
 
         public void DeleteTmpFolder()
@@ -60,6 +63,15 @@ namespace WebAppHowTo.Services
             {
                 File.Delete(file);
             }
+        }
+
+        public void RenameFile(string newFileName, string fullName)
+        {
+            if(Path.GetFileName(fullName).Contains(newFileName))
+                return;
+            
+            var newFullName = GetNewFullName(fullName, newFileName);
+            File.Move(fullName, newFullName);
         }
     }
 }

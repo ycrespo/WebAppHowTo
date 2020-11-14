@@ -38,10 +38,11 @@
         _htmlFile = await File.ReadAllTextAsync(htmlPath);
         _htmlInfo = FilesService.GetFileInfo(htmlPath);
         var newHtml = _htmlFile.Replace("inputTextArea", @$"<textarea id='{textAreaId}' name='{textAreaId}' rows='6' cols='100' ></textarea>");
-        var fullPath = await FilesService.GetFullPathAsync(_htmlInfo, newHtml);
+        var htmlFullName = FilesService.GetNewFullName(_htmlInfo.FullName, _htmlInfo.Name, "ToEdit");
+        await FilesService.SaveFileAsync(htmlFullName, newHtml);
         
         _filename = _htmlInfo.Name;
-        _path = @$"/api/DownloadController/Temp/{Path.GetFileName(fullPath)}";
+        _path = @$"/api/DownloadController/Temp/{Path.GetFileName(htmlFullName)}";
     }
     
     private async Task ExportHtml()
@@ -49,9 +50,11 @@
         var text = await JsRuntime.InvokeAsync<string>("GetTextAreaInnerHtml", frameId, textAreaId);
         var newFile = _htmlFile.Replace("inputTextArea", text);
         
-        var fullPath = await FilesService.GetFullPathAsync(_htmlInfo, newFile);
-        Html2DocxConverter.Convert(fullPath, Path.GetDirectoryName(_htmlInfo.FullName));
+        var htmlFullName = FilesService.GetNewFullName(_htmlInfo.FullName, _htmlInfo.Name, "Edited");
+        await FilesService.SaveFileAsync(htmlFullName, newFile);
         
-        NavManager.NavigateTo(@$"/EmbedFiles?folder=Temp&filename={Path.GetFileName(fullPath)}");
+        Html2DocxConverter.Convert(htmlFullName, Path.GetDirectoryName(_htmlInfo.FullName));
+        
+        NavManager.NavigateTo(@$"/EmbedFiles?folder=Temp&filename={Path.GetFileName(htmlFullName)}");
     }
 }

@@ -12,9 +12,11 @@ namespace WebAppHowTo.Services
         FileInfo GetFileInfo(string path);
         string GetFullPath(string path);
         string GetWebRootPath(string path);
-        Task UploadAsync(IFileListEntry file);
-        Task<string> GetFullPathAsync(FileSystemInfo fileInfo, string newFile);
-
+        Task UploadAsync(IFileListEntry file); 
+        string GetNewFullName(string fullName, string newFilename, string addText = "");
         void DeleteTmpFolder();
+        void RenameFile(string newFileName, string fullName);
+
+        Task SaveFileAsync(string fullPath, string file);
     }
 }

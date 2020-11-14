@@ -1,8 +1,9 @@
 @page "/Downloads"
+@inject NavigationManager NavManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 @inject IFilesService FilesService
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 
 <h3>Downloads</h3>
 
@@ -11,7 +12,6 @@
         <thead>
         <tr>
             <th>Filename</th>
-            <th>Size</th>
             <th>Extension</th>
         </tr>
         </thead>
@@ -19,9 +19,16 @@
         @foreach (var fileInfo in _downloadsFilesInfos)
         {
             <tr>
-                <td>@fileInfo.Name</td>
-                <td>@fileInfo.Length</td>
+                <td>
+                    <input type="text" id="@($"Inp{fileInfo.Name}")" style="border:none" value="@fileInfo.Name" size="@((int)fileInfo.Name.Length*1.3)" readonly="true"><br>
+                </td>
                 <td>@fileInfo.Extension</td>
+                <td>
+                    <span id="@($"Edit{fileInfo.Name}")" class="oi oi-pencil" aria-hidden="true" style="color:green;" @onclick="() => UpdateState(fileInfo.Name)"></span>
+                    <span id="@($"Save{fileInfo.Name}")" @onclick="() => RenameFile(fileInfo)" hidden="true">
+                        <span class="iconify" data-icon="ion:save" style="color:green;"></span>
+                    </span>
+                </td>
                 <td>
                     <Link Extension="@fileInfo.Extension" Href="@($"/EmbedFiles?folder=Downloads&filename={fileInfo.Name}")"/>
                 </td>
@@ -80,25 +87,44 @@
 
     protected override void OnInitialized()
     {
-        _downloadsFilesInfos = FilesService.GetFilesInfo(@"wwwroot\Downloads"); 
-        _uploadsFilesInfos = FilesService.GetFilesInfo(@"Uploads");
+        LoadFiles();
         _isValid = true;
     }
     
     private async Task OnClickDownloadButton(FileSystemInfo fileInfo)
     {
-        await JSRuntime.InvokeVoidAsync(
+        await JsRuntime.InvokeVoidAsync(
             "downloadFromUrl", $"/api/DownloadController/{fileInfo.Name}", $"{fileInfo.Name}");
     }
 
     private async Task OnClickDeleteButton(FileSystemInfo fileInfo)
     {
-        var res = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete the file?");
+        var res = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete the file?");
         if (res == false) return;
         
         File.Delete(fileInfo.FullName);
     }
-
     
+    private async Task RenameFile(FileSystemInfo fileInfo)
+    {
+        var newFileName = await JsRuntime.InvokeAsync<string>("GetInputValue", $"Inp{fileInfo.Name}");
+        FilesService.RenameFile(newFileName, fileInfo.FullName);
+        await UpdateState(fileInfo.Name);
+        LoadFiles();
+    }
+
+    private async Task UpdateState(string filename)
+    {
+        await JsRuntime.InvokeVoidAsync("SetReadOnlyOnOff", $"Inp{filename}");
+        await JsRuntime.InvokeVoidAsync("SetHiddenOnOff", $"Edit{filename}");
+        await JsRuntime.InvokeVoidAsync("SetHiddenOnOff", $"Save{filename}");
+    }
+
+    private void LoadFiles()
+    {
+        _downloadsFilesInfos = FilesService.GetFilesInfo(@"wwwroot\Downloads"); 
+        _uploadsFilesInfos = FilesService.GetFilesInfo(@"Uploads");
+    }
+
 
 }
